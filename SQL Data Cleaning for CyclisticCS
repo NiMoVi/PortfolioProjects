@@ -1,0 +1,275 @@
+/*
+
+1. Clean data to prepare to union into one table.
+
+2. Union into one table.
+
+*/
+
+-------------------------------------------------------------
+
+-- Change datatypes for consistent columns to simplify union.
+
+ALTER TABLE dbo.[202004_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202004_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202005_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202005_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202006_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202006_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202007_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202007_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202008_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202008_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202009_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202009_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202010_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202010_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202011_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202011_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202012_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202101_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202102_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202103_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202104_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202107_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[202107_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+ALTER TABLE dbo.[2020Q1_tripdata]
+ALTER COLUMN start_station_id nvarchar(255);
+
+ALTER TABLE dbo.[2020Q1_tripdata]
+ALTER COLUMN end_station_id nvarchar(255);
+
+-------------------------------------------------------------
+
+
+-- Union all tables into one
+
+SELECT *
+INTO gda_case_study.dbo.[full_tripdata]
+FROM gda_case_study.dbo.[202004_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202005_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202006_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202007_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202008_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202009_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202010_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202011_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202012_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202101_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202102_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202103_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202104_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202105_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202106_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202107_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[202108_tripdata];
+
+-----------------------------------------------------
+
+-- Decided to split 2020 and 2021 as different tables. Split full data and add Q1 to 2020
+
+SELECT *
+INTO [gda_case_study].[dbo].[2021_tripdata]
+FROM [gda_case_study].[dbo].[full_tripdata]
+WHERE [started_at] > '2020-12-31 23:59:59'
+
+SELECT *
+INTO [gda_case_study].[dbo].[2020_tripdata_prep]
+FROM [gda_case_study].[dbo].[full_tripdata]
+WHERE [started_at] < '2020-12-31 23:59:59'
+
+SELECT *
+INTO gda_case_study.dbo.[2020_tripdata]
+FROM gda_case_study.dbo.[2020Q1_tripdata]
+UNION ALL
+SELECT *
+FROM gda_case_study.dbo.[2020_tripdata_prep]
+
+--------------------------------------------------------
+
+-- Delete old tables
+
+--DROP TABLE [gda_case_study].[dbo].[2020Q1_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[2020_tripdata_prep]
+--DROP TABLE [gda_case_study].[dbo].[202004_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202005_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202006_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202007_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202008_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202009_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202010_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202011_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202012_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202101_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202102_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202103_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202104_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202105_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202106_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202107_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[202108_tripdata]
+--DROP TABLE [gda_case_study].[dbo].[full_tripdata]
+
+
+---------------------------------------------------------
+
+-- Remake full data
+
+SELECT *
+INTO [gda_case_study].[dbo].[full_tripdata]
+FROM [gda_case_study].[dbo].[2020_tripdata]
+UNION ALL
+SELECT *
+FROM [gda_case_study].[dbo].[2021_tripdata]
+
+
+----------------------------------------------------------
+
+-- Adding coulmn, ride length in minutes
+
+ALTER TABLE [2019_tripdata]
+ADD min_between AS DATEDIFF(minute,[started_at],[ended_at])
+
+ALTER TABLE [2020_tripdata]
+ADD min_between AS DATEDIFF(minute,[started_at],[ended_at])
+
+ALTER TABLE [2021_tripdata]
+ADD min_between AS DATEDIFF(minute,[started_at],[ended_at])
+
+
+-----------------------------------------------------------
+
+-- Remove bad data( Where trip ends before it begins )
+
+UPDATE [2019_tripdata]
+SET [started_at] = null
+WHERE [min_between] < '0'
+
+UPDATE [2019_tripdata]
+SET [ended_at] = null
+WHERE [started_at] IS null
+
+UPDATE [2020_tripdata]
+SET [started_at] = null
+WHERE [min_between] < '0'
+
+UPDATE [2020_tripdata]
+SET [ended_at] = null
+WHERE [started_at] IS null
+
+UPDATE [2021_tripdata]
+SET [started_at] = null
+WHERE [min_between] < '0'
+
+UPDATE [2021_tripdata]
+SET [ended_at] = null
+WHERE [started_at] IS null
+
+-------------------------------------------------------------------
+
+-- Create column with calculated distance traveled
+
+ALTER TABLE [2020_tripdata]
+ADD distance_traveled float
+
+UPDATE [2020_tripdata]
+SET distance_traveled = CASE	
+WHEN [end_lat] is null THEN null
+WHEN [end_lng] is null THEN null
+ELSE geography::Point([start_lat], [start_lng], 4326).STDistance(geography::Point([end_lat], [end_lng], 4326))
+END
+
+SELECT *
+FROM [2020_tripdata]
+
+ALTER TABLE [2021_tripdata]
+ADD distance_traveled float
+
+UPDATE [2021_tripdata]
+SET distance_traveled = CASE	
+WHEN [end_lat] is null THEN null
+WHEN [end_lng] is null THEN null
+ELSE geography::Point([start_lat], [start_lng], 4326).STDistance(geography::Point([end_lat], [end_lng], 4326))
+END
+
+SELECT *
+FROM [2021_tripdata]
+
